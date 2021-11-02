@@ -1,37 +1,51 @@
 import express from 'express';
-import ScraperService from '../services/scraper.service';
+import RecipesService from '../services/recipes.service';
+
 const recipeScraper = require('recipe-scraper');
 const bing = require('bing-scraper');
 
 var router = express.Router();
 
 router.route('/:id').get(async (req, res) => {
-    let searchScrapper = new ScraperService();
+    let service = new RecipesService();
+    let recipes: Array<Recipe> = [];
 
-    bing.search(
+    await bing.search(
         {
             q: 'allrecipes ' + req.params.id,
             enforceLanguage: true
         },
-        function (err: any, response: any) {
+        async (err: any, response: any) => {
             if (err) {
-                throw err;
+                res.json({ statusCode: 500, data: 'Internal Server Error' });
             } else {
-                console.log(response['results'][0]['url']);
-                recipeScraper(response['results'][0]['url'])
-                    .then((recipe: any) =>
-                        res.json({ statusCode: 200, data: recipe })
-                    )
-                    .catch((error: any) => {
-                        return res.status(500).json({
-                            statusCode: 500,
-                            message: 'Recipe not found'
-                        });
-                    });
+                for (let i = 0; i < response['results'].length; i++) {
+                    await recipeScraper(response['results'][i]['url'])
+                        .then((recipe: any) => {
+                            let newRecipe: Recipe = {
+                                name: recipe['name'],
+                                ingredients: recipe['ingredients'],
+                                instructions: recipe['instructions'],
+                                tags: recipe['tags'],
+                                servings: recipe['servings'],
+                                image: recipe['image'],
+                                time: {
+                                    prepration_time: recipe['time']['prep'],
+                                    cooking_time: recipe['time']['cook'],
+                                    additional_time: recipe['time']['inactive'],
+                                    total: recipe['time']['total']
+                                }
+                            };
+                            recipes.push(newRecipe);
+                        })
+                        .catch((error: any) => {});
+                }
+                if (recipes.length === 0) {
+                    res.status(500).json({ data: 'No recipes found' });
+                }
+                res.status(200).json({ data: recipes });
             }
         }
     );
-    let url = await searchScrapper.scrape(req.params.id);
 });
-
 export default router;

@@ -8,6 +8,7 @@ interface Recipe {
   time: {
     prepration_time: string;
     cooking_time: string;
+    additional_time: string;
     total: string;
   };
 }
