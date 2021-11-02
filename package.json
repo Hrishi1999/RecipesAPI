@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "nodemon --files app.ts",
-    "start": "node app.ts"
+    "start": "ts-node app.ts"
   },
   "author": "Hrishi Patel",
   "license": "ISC",
