@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "15.11.0"
+  },
   "scripts": {
     "test": "nodemon --files app.ts",
     "start": "node dist/app.js",

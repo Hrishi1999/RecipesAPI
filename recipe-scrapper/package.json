@@ -11,6 +11,9 @@
     "recipe"
   ],
   "main": "scrapers/index.js",
+  "engines": {
+    "node": "15.11.0"
+  },
   "scripts": {
     "test": "mocha --timeout 15000",
     "start": "node scrapers/index.js",
