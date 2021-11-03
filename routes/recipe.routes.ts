@@ -7,8 +7,8 @@ const bing = require('bing-scraper');
 var router = express.Router();
 
 router.route('/:id').get(async (req, res) => {
-    let service = new RecipesService();
     let recipes: Array<Recipe> = [];
+    let maxRecipes = req.query.maxRecipes;
 
     await bing.search(
         {
@@ -19,7 +19,17 @@ router.route('/:id').get(async (req, res) => {
             if (err) {
                 res.json({ statusCode: 500, data: 'Internal Server Error' });
             } else {
+                if (maxRecipes && maxRecipes > response['results'].length) {
+                    maxRecipes = response['results'].length;
+                } else if (maxRecipes === null || maxRecipes === undefined) {
+                    maxRecipes = response['results'].length;
+                }
+
+                let addedRecipes = 0;
                 for (let i = 0; i < response['results'].length; i++) {
+                    if (addedRecipes === Number(maxRecipes)) {
+                        break;
+                    }
                     await recipeScraper(response['results'][i]['url'])
                         .then((recipe: any) => {
                             let newRecipe: Recipe = {
@@ -37,13 +47,17 @@ router.route('/:id').get(async (req, res) => {
                                 }
                             };
                             recipes.push(newRecipe);
+                            addedRecipes++;
                         })
                         .catch((error: any) => {});
                 }
                 if (recipes.length === 0) {
-                    res.status(500).json({ data: 'No recipes found' });
+                    return res.status(200).json({
+                        message: 'No recipes found',
+                        data: recipes
+                    });
                 }
-                res.status(200).json({ data: recipes });
+                return res.status(200).json({ data: recipes });
             }
         }
     );
