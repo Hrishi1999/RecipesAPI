@@ -36,6 +36,7 @@ router.route('/:id').get(async (req, res) => {
                                 name: recipe['name'],
                                 ingredients: recipe['ingredients'],
                                 instructions: recipe['instructions'],
+                                nutrients: recipe['nutrients'],
                                 tags: recipe['tags'],
                                 servings: recipe['servings'],
                                 image: recipe['image'],

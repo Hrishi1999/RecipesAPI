@@ -2,6 +2,7 @@ interface Recipe {
   name: string;
   ingredients: Array<String>;
   instructions: Array<String>;
+  nutrients: Array<String>;
   tags: Array<String>;
   servings: string;
   image: string;
