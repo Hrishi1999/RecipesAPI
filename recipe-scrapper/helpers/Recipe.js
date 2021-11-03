@@ -4,7 +4,7 @@ class Recipe {
     this.description = "";
     this.ingredients = [];
     this.instructions = [];
-    this.nutrients = [];
+    this.nutrients = {};
     this.tags = [];
     this.time = {
       prep: "",

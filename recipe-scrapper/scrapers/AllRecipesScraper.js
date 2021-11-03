@@ -61,8 +61,7 @@ class AllRecipesScraper extends BaseScraper {
       let value = $(el)
       .find(".nutrient-value")
       .text().trim();
-      nutrients.push({[name]: value})
-
+      nutrients[name] = value;
     });
   }
 
