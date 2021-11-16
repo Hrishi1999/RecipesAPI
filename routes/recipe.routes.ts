@@ -1,5 +1,4 @@
 import express from 'express';
-import RecipesService from '../services/recipes.service';
 
 const recipeScraper = require('recipe-scraper');
 const bing = require('bing-scraper');
@@ -12,7 +11,7 @@ router.route('/:id').get(async (req, res) => {
 
     await bing.search(
         {
-            q: 'allrecipes ' + req.params.id,
+            q: 'allrecipes.com ' + req.params.id,
             enforceLanguage: true
         },
         async (err: any, response: any) => {
